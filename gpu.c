@@ -1,10 +1,10 @@
-#include "dev_gpu.h"
+#include "gpu.h"
 #include "font.h"
 #include <stdlib.h>
 #include <string.h>
 #include <lauxlib.h>
 
-struct dev_gpu_s {
+struct gpu_s {
     uint32_t width;
     uint32_t height;
 
@@ -16,11 +16,11 @@ struct dev_gpu_s {
     uint32_t* colors_fg;
 };
 
-dev_gpu_t* dev_gpu_create(uint32_t width, uint32_t height)
+gpu_t* gpu_create(uint32_t width, uint32_t height)
 {
     if (width == 0 || width > 1000 || height == 0 || height > 1000) return 0;
 
-    dev_gpu_t* ctx = malloc(sizeof(dev_gpu_t));
+    gpu_t* ctx = malloc(sizeof(gpu_t));
 
     ctx->width = width;
     ctx->height = height;
@@ -62,7 +62,7 @@ static void draw_char(SDL_Surface* surface, int cx, int cy, char ch, uint32_t bg
     }
 }
 
-void dev_gpu_redraw(dev_gpu_t* ctx, SDL_Surface* surface)
+void gpu_redraw(gpu_t* ctx, SDL_Surface* surface)
 {
     int x, y;
 
@@ -85,7 +85,7 @@ static int l_set(lua_State* L)
     int ch = luaL_checkinteger(L, 4);
 
     lua_getfield(L, 1, "ctx");
-    dev_gpu_t* ctx = lua_touserdata(L, -1);
+    gpu_t* ctx = lua_touserdata(L, -1);
     lua_pop(L, 1);
 
     if (y < 0 || y >= ctx->height) return 0;
@@ -106,7 +106,7 @@ static int l_get(lua_State* L)
     int y = luaL_checkinteger(L, 3);
 
     lua_getfield(L, 1, "ctx");
-    dev_gpu_t* ctx = lua_touserdata(L, -1);
+    gpu_t* ctx = lua_touserdata(L, -1);
     lua_pop(L, 1);
 
     if (y < 0 || y >= ctx->height) return 0;
@@ -130,7 +130,7 @@ static int l_set_color(lua_State* L)
     int color = luaL_checkinteger(L, 3);
 
     lua_getfield(L, 1, "ctx");
-    dev_gpu_t* ctx = lua_touserdata(L, -1);
+    gpu_t* ctx = lua_touserdata(L, -1);
     lua_pop(L, 1);
 
     uint32_t* ptr;
@@ -153,7 +153,7 @@ static int l_get_color(lua_State* L)
     int type = luaL_checkinteger(L, 2);
 
     lua_getfield(L, 1, "ctx");
-    dev_gpu_t* ctx = lua_touserdata(L, -1);
+    gpu_t* ctx = lua_touserdata(L, -1);
     lua_pop(L, 1);
 
     int color;
@@ -181,7 +181,7 @@ static int l_copy(lua_State* L)
     int ty = luaL_checkinteger(L, 7);
 
     lua_getfield(L, 1, "ctx");
-    dev_gpu_t* ctx = lua_touserdata(L, -1);
+    gpu_t* ctx = lua_touserdata(L, -1);
     lua_pop(L, 1);
 
     char ok = 0;
@@ -226,7 +226,7 @@ end:
 }
 
 
-void dev_gpu_register(lua_State* L, dev_gpu_t* ctx)
+void gpu_register(lua_State* L, gpu_t* ctx)
 {
     lua_newtable(L);
  

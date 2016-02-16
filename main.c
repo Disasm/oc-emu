@@ -6,7 +6,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 #include "font.h"
-#include "dev_gpu.h"
+#include "gpu.h"
 #include "lfs.h"
 
 #define FPS 60
@@ -14,7 +14,7 @@
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
 
-dev_gpu_t* gpu = 0;
+gpu_t* gpu = 0;
 
 #define MAX_SDL_EVENTS 16
 SDL_Event events[MAX_SDL_EVENTS];
@@ -149,7 +149,7 @@ int lua_thread(void* param)
     lua_pushcfunction(L, l_get_event);
     lua_setglobal(L, "get_event");
     
-    dev_gpu_register(L, gpu);
+    gpu_register(L, gpu);
 
     load_core_lua(L, args);
     //if (load_precompiled_code(L) < 0) goto end;
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
     args[argc-1] = 0;
 
     font_init();
-    gpu = dev_gpu_create(SCREEN_WIDTH, SCREEN_HEIGHT);
+    gpu = gpu_create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     events_mutex = SDL_CreateMutex();
 
@@ -244,7 +244,7 @@ int main(int argc, char* argv[])
         {
             t0 = t;
 
-            dev_gpu_redraw(gpu, surface);
+            gpu_redraw(gpu, surface);
             SDL_UpdateWindowSurface(window);
         }
     }
