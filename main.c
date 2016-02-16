@@ -66,10 +66,8 @@ void dumpStack(lua_State* L)
     printf("\n");
 }
 
-const char* keyboardAddr = "{----}";
-
 #include "scancode.h"
-int pushEvent(lua_State* L)
+int l_get_event(lua_State* L)
 {
     int n = 0;
     SDL_mutexP(events_mutex);
@@ -105,12 +103,10 @@ int pushEvent(lua_State* L)
                 }
 
                 lua_pushstring(L, (event->type == SDL_KEYDOWN)?"key_down":"key_up");
-                lua_pushstring(L, keyboardAddr);
                 lua_pushinteger(L, ch);
                 lua_pushinteger(L, scancode);
-                lua_pushstring(L, "username");
 
-                n = 5;
+                n = 3;
 
                 break;
                 }
@@ -122,6 +118,26 @@ int pushEvent(lua_State* L)
 
     return n;
 }
+
+int load_core_lua(lua_State* L)
+{
+    int error;
+
+    error = luaL_loadfile(L, "core.lua");
+    if (error) goto err;
+    
+    error = lua_pcall(L, 0, 0, 0);
+    if (error) goto err;
+
+err:
+    if (error)
+    {
+        fprintf(stderr, "%s\n", lua_tostring(L, -1));
+        lua_pop(L, 1);  // pop error message from the stack
+    }
+    return -1;
+}
+
 #include "machine.h"
 #include "init.h"
 int load_precompiled_code(lua_State* L)
@@ -153,9 +169,8 @@ int load_precompiled_code(lua_State* L)
         lua_getfield(L, -2, "resume");
         lua_pushvalue(L, -2);
         //printf("top2=%d\n", lua_gettop(L));
-        int n = pushEvent(L);
         //dumpStack(L);
-        error = lua_pcall(L, 1 + n, 2, 0);
+        error = lua_pcall(L, 1, 2, 0);
         //printf("top3=%d\n", lua_gettop(L));
         //dumpStack(L);
         if (error) goto err;
@@ -224,8 +239,7 @@ int l_mseconds(lua_State* L)
 void lua_reg_stub_module(lua_State* L, const char* name)
 {
     lua_newtable(L);
-    const char* uuid = component_register(L, name);
-    if (strcmp(name, "keyboard") == 0) keyboardAddr = uuid;
+    component_register(L, name);
 }
 
 int lua_thread_terminated = 0;
@@ -240,6 +254,9 @@ int lua_thread(void* param)
     lua_pushcfunction(L, l_mseconds);
     lua_setglobal(L, "mseconds");
     
+    lua_pushcfunction(L, l_get_event);
+    lua_setglobal(L, "get_event");
+    
     component_init(L);
     dev_gpu_register(L, gpu);
     api_computer_register(L);
@@ -252,7 +269,8 @@ int lua_thread(void* param)
         api_filesystem_register(L, args[i], (i==0)?1:0);
     }
 
-    if (load_precompiled_code(L) < 0) goto end;
+    load_core_lua(L);
+    //if (load_precompiled_code(L) < 0) goto end;
 
 end:
     lua_close(L);
