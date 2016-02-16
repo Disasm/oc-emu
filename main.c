@@ -91,7 +91,7 @@ int l_get_event(lua_State* L)
                 if (button != 0) lua_pushstring(L, button);
                 else lua_pushnil(L);
 
-                n = 4;
+                n = 3;
                 break;
             }
         }
@@ -103,14 +103,21 @@ int l_get_event(lua_State* L)
     return n;
 }
 
-int load_core_lua(lua_State* L)
+int load_core_lua(lua_State* L, char** args)
 {
     int error;
 
     error = luaL_loadfile(L, "core.lua");
     if (error) goto err;
+
+    int n = 0;
+    while (*args)
+    {
+        lua_pushstring(L, *args);
+        n++; args++;
+    }
     
-    error = lua_pcall(L, 0, 0, 0);
+    error = lua_pcall(L, n, 0, 0);
     if (error) goto err;
 
 err:
@@ -163,7 +170,7 @@ int lua_thread(void* param)
         api_filesystem_register(L, args[i], (i==0)?1:0);
     }
 
-    load_core_lua(L);
+    load_core_lua(L, args);
     //if (load_precompiled_code(L) < 0) goto end;
 
 end:
