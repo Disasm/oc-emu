@@ -1,6 +1,10 @@
 #include "font.h"
 #include <stdio.h>
 
+unsigned char font_src[] = {
+#include "font_8x16.h"
+};
+
 static uint16_t font[256][FONT_HEIGHT];
 
 uint8_t flip(uint8_t v)
@@ -16,30 +20,20 @@ uint8_t flip(uint8_t v)
     return r;
 }
 
-void font_load(const char* filename)
+void font_init()
 {
-    FILE* f = fopen(filename, "rb");
-    if (f == 0)
+    if (sizeof(font_src) < (FONT_WIDTH*FONT_HEIGHT*256/8))
     {
-        fprintf(stderr, "Can't open font file\n");
+        fprintf(stderr, "font_init: wrong font size\n");
         return;
     }
-
-    uint8_t buffer[4096];
-    if (fread(buffer, 1, 4096, f) != 4096)
-    {
-        fprintf(stderr, "Can't read font file\n");
-        fclose(f);
-        return;
-    }
-    fclose(f);
 
     int i, y;
     for (i = 0; i < 256; i++)
     {
         for (y = 0; y < FONT_HEIGHT; y++)
         {
-            font[i][y] = flip(buffer[i*FONT_HEIGHT + y]);
+            font[i][y] = flip(font_src[i*FONT_HEIGHT + y]);
         }
     }
 }

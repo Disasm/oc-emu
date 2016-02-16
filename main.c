@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
     for (i = 1; i < argc; i++) args[i-1] = argv[i];
     args[argc-1] = 0;
 
-    font_load("fonts/koi8r-8x16");
+    font_init();
     gpu = dev_gpu_create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     events_mutex = SDL_CreateMutex();
