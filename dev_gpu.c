@@ -249,6 +249,6 @@ void dev_gpu_register(lua_State* L, dev_gpu_t* ctx)
     lua_pushlightuserdata(L, ctx);
     lua_setfield(L, -2, "ctx");
 
-    component_register(L, "gpu");
+    lua_setglobal(L, "int_gpu");
 }
 

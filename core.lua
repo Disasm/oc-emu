@@ -31,6 +31,7 @@ end
 component_register("keyboard", {})
 component_register("screen", {})
 component_register("computer", {})
+component_register("gpu", int_gpu)
 
 local addr = {}
 for address, c in pairs(intcomponent.list) do
