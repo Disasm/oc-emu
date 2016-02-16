@@ -1,4 +1,4 @@
-SRCS = main.c font.c uuid.c lfs.c dev_gpu.c api_component.c api_filesystem.c api_computer.c
+SRCS = main.c font.c uuid.c lfs.c dev_gpu.c
 
 all: oc-emu
 

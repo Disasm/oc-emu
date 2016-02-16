@@ -6,10 +6,7 @@
 #include <lualib.h>
 #include <lauxlib.h>
 #include "font.h"
-#include "api_component.h"
 #include "dev_gpu.h"
-#include "api_filesystem.h"
-#include "api_computer.h"
 #include "lfs.h"
 
 #define FPS 60
@@ -137,12 +134,6 @@ int l_mseconds(lua_State* L)
     return 1;
 }
 
-void lua_reg_stub_module(lua_State* L, const char* name)
-{
-    lua_newtable(L);
-    component_register(L, name);
-}
-
 int lua_thread_terminated = 0;
 
 int lua_thread(void* param)
@@ -158,7 +149,6 @@ int lua_thread(void* param)
     lua_pushcfunction(L, l_get_event);
     lua_setglobal(L, "get_event");
     
-    component_init(L);
     dev_gpu_register(L, gpu);
 
     load_core_lua(L, args);

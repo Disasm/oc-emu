@@ -1,6 +1,5 @@
 #include "dev_gpu.h"
 #include "font.h"
-#include "api_component.h"
 #include <stdlib.h>
 #include <string.h>
 #include <lauxlib.h>

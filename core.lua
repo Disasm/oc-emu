@@ -24,6 +24,7 @@ if #argv == 0 then
     return
 end
 
+intcomponent = {list={}}
 component_register("eeprom", {__path=argv[1]})
 for i = 2,#argv do
     component_register("filesystem", {__path=argv[i]})
