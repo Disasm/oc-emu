@@ -36,7 +36,7 @@ int l_get_event(lua_State* L)
         {
             case SDL_KEYDOWN:
             case SDL_KEYUP:
-                {
+            {
                 SDL_KeyboardEvent *key = &event->key;
 
                 int scancode = key->keysym.scancode;
@@ -65,9 +65,35 @@ int l_get_event(lua_State* L)
                 lua_pushinteger(L, scancode);
 
                 n = 3;
-
                 break;
+            }
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+            {
+                SDL_MouseButtonEvent *ev = &event->button;
+
+                const char* button = 0;
+                switch (ev->button)
+                {
+                    case SDL_BUTTON_LEFT:
+                        button = "left";
+                        break;
+                    case SDL_BUTTON_RIGHT:
+                        button = "right";
+                        break;
+                    case SDL_BUTTON_MIDDLE:
+                        button = "middle";
+                        break;
                 }
+                lua_pushstring(L, (event->type == SDL_MOUSEBUTTONDOWN)?"mouse_down":"mouse_up");
+                lua_pushinteger(L, ev->x);
+                lua_pushinteger(L, ev->y);
+                if (button != 0) lua_pushstring(L, button);
+                else lua_pushnil(L);
+
+                n = 4;
+                break;
+            }
         }
         memmove(event, event+1, sizeof(event)*(events_cnt-1));
         events_cnt--;
@@ -211,6 +237,8 @@ int main(int argc, char* argv[])
 
                 case SDL_KEYDOWN:
                 case SDL_KEYUP:
+                case SDL_MOUSEBUTTONDOWN:
+                case SDL_MOUSEBUTTONUP:
                     SDL_mutexP(events_mutex);
                     if (events_cnt < MAX_SDL_EVENTS)
                     {
