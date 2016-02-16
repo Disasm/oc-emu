@@ -9,6 +9,29 @@ local function uuid()
     return s
 end
 
+local function component_register(type, t)
+    t.type = type
+    local addr = uuid()
+    intcomponent.list[addr] = t
+end
+
+local argv = {...}
+for i = 1,#argv do
+    print("arg:"..argv[i])
+end
+
+if #argv == 0 then
+    return
+end
+
+component_register("eeprom", {__path=argv[1]})
+for i = 2,#argv do
+    component_register("filesystem", {__path=argv[i]})
+end
+component_register("keyboard", {})
+component_register("screen", {})
+component_register("computer", {})
+
 local addr = {}
 for address, c in pairs(intcomponent.list) do
     addr[c.type] = address

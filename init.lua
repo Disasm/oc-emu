@@ -344,21 +344,47 @@ print("Components:")
 for address,c in pairs(intcomponent.list) do
     print(address.." => "..c.type)
     if c.type == "eeprom" then
+        local function get_file(self, filename)
+            local path = validatePath(self, filename)
+            local f = io.open(path, "r")
+            if f == nil then
+                return nil
+            end
+            local data = f:read(100000)
+            f:close()
+            return data
+        end
+
+        local function set_file(self, filename, data)
+            local path = validatePath(self, filename)
+            local f = io.open(path, "w")
+            if f == nil then
+                return false
+            end
+            f:write(data)
+            f:close()
+            return true
+        end
+
         c.methods = {
             get = function(self)
-                return self:get_file("init.lua")
+                local data = get_file(self, "init.lua")
+                if data == nil then
+                    print("Can't read init.lua file in EEPROM directory")
+                end
+                return data
             end,
 
             set = function(self, data)
-                self:set_file("init.lua", data)
+                return set_file(self, "init.lua", data)
             end,
 
             getLabel = function(self)
-                return self:get_file("label")
+                return get_file(self, "label")
             end,
 
             setLabel = function(self, label)
-                self:set_file("label", label)
+                return set_file(self, "label", label)
             end,
 
             getSize = function(self)
@@ -366,11 +392,11 @@ for address,c in pairs(intcomponent.list) do
             end,
             
             getData = function(self)
-                return self:get_file("data")
+                return get_file(self, "data")
             end,
 
             setData = function(self, label)
-                self:set_file("data", label)
+                return set_file(self, "data", label)
             end,
         }
     end

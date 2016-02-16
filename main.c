@@ -160,15 +160,6 @@ int lua_thread(void* param)
     
     component_init(L);
     dev_gpu_register(L, gpu);
-    api_computer_register(L);
-    lua_reg_stub_module(L, "screen");
-    lua_reg_stub_module(L, "keyboard");
-
-    int i;
-    for (i = 0; args[i]; i++)
-    {
-        api_filesystem_register(L, args[i], (i==0)?1:0);
-    }
 
     load_core_lua(L, args);
     //if (load_precompiled_code(L) < 0) goto end;
