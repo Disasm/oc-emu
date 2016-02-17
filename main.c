@@ -21,7 +21,6 @@ SDL_Event events[MAX_SDL_EVENTS];
 int events_cnt = 0;
 SDL_mutex* events_mutex;
 
-#include "scancode.h"
 int l_get_event(lua_State* L)
 {
     int n = 0;
@@ -36,30 +35,9 @@ int l_get_event(lua_State* L)
             {
                 SDL_KeyboardEvent *key = &event->key;
 
-                int scancode = key->keysym.scancode;
-                struct k_info info = keymap[scancode];
-                char ch = 0;
-                if (info.type == K_UNKNOWN)
-                {
-                    scancode = 0;
-                }
-                else
-                {
-                    scancode = info.code;
-                    ch = info.ch;
-                }
-                printf("Scancode: 0x%02x\n", scancode);
-                if (ch == 0)
-                {
-                    const char* name = SDL_GetKeyName(key->keysym.sym);
-                    printf("Char: '%s'\n", name);
-                    char ch = 0;
-                    if (strlen(name) == 1) ch = tolower(name[0]);
-                }
-
                 lua_pushstring(L, (event->type == SDL_KEYDOWN)?"key_down":"key_up");
-                lua_pushinteger(L, ch);
-                lua_pushinteger(L, scancode);
+                lua_pushinteger(L, key->keysym.scancode);
+                lua_pushinteger(L, (key->keysym.mod & KMOD_SHIFT)?1:0);
 
                 n = 3;
                 break;

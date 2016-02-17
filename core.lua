@@ -33,6 +33,7 @@ component_register("keyboard", {})
 component_register("screen", {})
 component_register("computer", {})
 component_register("gpu", int_gpu)
+local scancodes = loadfile("scancode.lua")()
 
 local addr = {}
 for address, c in pairs(intcomponent.list) do
@@ -50,8 +51,34 @@ while true do
         print(table.unpack(ev))
         local send = false
         if (ev[1] == "key_down") or (ev[1] == "key_up") then
-            ev = {ev[1], addr["keyboard"], ev[2], ev[3], "username", n=5}
-            send = true
+            local sdl_scancode = ev[2]
+            local m = scancodes[sdl_scancode]
+            if m ~= nil then
+                print(table.unpack(m))
+                local scancode = m[1]
+
+                local ch1
+                if m[2] ~= nil then
+                    ch1 = string.byte(m[2])
+                else
+                    ch1 = 0
+                end
+                local ch2
+                if m[3] ~= nil then
+                    ch2 = string.byte(m[3])
+                else
+                    ch2 = ch1
+                end
+
+                local ch
+                if ev[3] == 1 then
+                    ch = ch2
+                else
+                    ch = ch1
+                end
+                ev = {ev[1], addr["keyboard"], ch, scancode, "username", n=5}
+                send = true
+            end
         end
         if (ev[1] == "mouse_down") then
             local x = math.floor(ev[2] / 8) + 1
