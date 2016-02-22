@@ -66,7 +66,7 @@ int l_get_event(lua_State* L)
                 if (button != 0) lua_pushstring(L, button);
                 else lua_pushnil(L);
 
-                n = 3;
+                n = 4;
                 break;
             }
         }
