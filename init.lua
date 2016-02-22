@@ -575,8 +575,7 @@ for address,c in pairs(intcomponent.list) do
             end,
 
             get = function(self, x, y)
-                local r = self:get(x - 1, y - 1)
-                return r
+                return self:get(x - 1, y - 1)
             end,
 
             getScreen = function()
