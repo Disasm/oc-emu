@@ -381,14 +381,14 @@ component = {
             error("No such method: "..c.type..":"..method)
         end
 
-        io.write("invoke "..address..":"..method.."(")
+        --[[io.write("invoke "..address..":"..method.."(")
         for i=1,args.n do
             if i ~= 1 then
                 io.write(", ")
             end
             io.write(tostring(args[i]))
         end
-        io.write(")\n")
+        io.write(")\n")]]--
 
         local r = table.pack(m(c, table.unpack(args)))
         --[[print("result:")
