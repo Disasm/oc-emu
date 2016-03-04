@@ -207,7 +207,7 @@ computer = {
     users = {},
     addUser = function() end,
     removeUser = function() end,
-    
+
     pushSignal = function(signal, ...)
         io.write("pushSignal: ")
         t = table.pack(signal, ...)
@@ -370,7 +370,7 @@ component = {
         if c == nil then
             error("No such component: "..address)
         end
-        
+
         local m = c.methods
         if m == nil then
             error("Method table not found for "..address)
@@ -492,7 +492,7 @@ for address,c in pairs(intcomponent.list) do
             getSize = function(self)
                 return 1024 -- TODO: FIX
             end,
-            
+
             getData = function(self)
                 return get_file(self, "data")
             end,
@@ -523,7 +523,7 @@ for address,c in pairs(intcomponent.list) do
             getResolution = function(self)
                 return 80, 25
             end,
-            
+
             maxResolution = function(self)
                 return 80, 25
             end,
@@ -558,7 +558,7 @@ for address,c in pairs(intcomponent.list) do
             copy = function(self, x, y, w, h, tx, ty)
                 self:copy(x-1, y-1, w, h, x+tx-1, y+ty-1)
             end,
-            
+
             set = function(self, x, y, value, vertical)
                 if vertical then
                     error("gpu:set: vertical is not implemented", 2)
@@ -589,6 +589,21 @@ for address,c in pairs(intcomponent.list) do
     end
     if c.type == "keyboard" then
         c.methods = {}
+    end
+    if c.type == "transposer" then
+        c.methods = {
+            getInventorySize = function(self, side)
+                return 16
+            end,
+
+            getStackInSlot = function(self, side, slot)
+              return nil
+            end,
+
+            transferItem = function(self, ...)
+              return false
+            end,
+        }
     end
 
     c.methods.address = address

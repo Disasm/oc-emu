@@ -33,6 +33,7 @@ component_register("keyboard", {})
 component_register("screen", {})
 component_register("computer", {})
 component_register("gpu", int_gpu)
+component_register("transposer", {})
 local scancodes = loadfile("scancode.lua")()
 
 local addr = {}
