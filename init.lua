@@ -585,6 +585,9 @@ for address,c in pairs(intcomponent.list) do
             getDepth = function()
                 return 8
             end,
+
+            setPaletteColor = function()
+            end,
         }
     end
     if c.type == "keyboard" then
