@@ -521,11 +521,11 @@ for address,c in pairs(intcomponent.list) do
             end,
 
             getResolution = function(self)
-                return 80, 25
+                return 71, 25
             end,
 
             maxResolution = function(self)
-                return 80, 25
+                return 71, 25
             end,
 
             setResolution = function(self, x, y)

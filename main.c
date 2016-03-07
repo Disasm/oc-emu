@@ -11,7 +11,7 @@
 
 #define FPS 60
 
-#define SCREEN_WIDTH 80
+#define SCREEN_WIDTH 71
 #define SCREEN_HEIGHT 25
 
 gpu_t* gpu = 0;
