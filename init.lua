@@ -186,6 +186,7 @@ userdata = {
 start_time = time()
 
 computer = {
+    isEmulator = true,
     isRobot = false,
     address = function()
         return component.getPrimaryAddr("computer")
