@@ -46,6 +46,14 @@ pcall(loadfile("init.lua"))
 local f = loadfile("machine.lua")
 local co = coroutine.create(f)
 
+local event_queue = {}
+
+computer.pushSignal = function(signal, ...)
+  print("computer.pushSignal: "..signal)
+  local t = table.pack(signal, ...)
+  event_queue[#event_queue+1] = t
+end
+
 while true do
     local ev = table.pack(get_event())
     if ev.n > 0 then
@@ -96,9 +104,13 @@ while true do
             ev = {n=0}
         end
     end
-    cmd = coroutine.resume(co, table.unpack(ev))
-    if cmd == "shutdown" then
-        break
+    if (ev.n == 0) and (#event_queue > 0) then
+      ev = event_queue[1]
+      table.remove(event_queue, 1)
+    end
+    cmd = table.pack(coroutine.resume(co, table.unpack(ev)))
+    if (cmd.n > 0) and (type(cmd[1]) == "string") then
+      event_queue[#event_queue+1] = cmd
     end
 end
 

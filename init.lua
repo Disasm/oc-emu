@@ -210,12 +210,7 @@ computer = {
     removeUser = function() end,
 
     pushSignal = function(signal, ...)
-        io.write("pushSignal: ")
-        t = table.pack(signal, ...)
-        for i = 1,t.n do
-            io.write(tostring(t[i]).." ")
-        end
-        io.write("\n")
+      -- Will be redefined in core.lua
     end,
 
     realTime = function()
