@@ -602,6 +602,10 @@ for address,c in pairs(intcomponent.list) do
             transferItem = function(self, ...)
               return false
             end,
+
+            getSlotMaxStackSize = function(self, side, slot)
+              return 64
+            end,
         }
     end
     if c.type == "redstone" then
