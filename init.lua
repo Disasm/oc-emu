@@ -604,6 +604,20 @@ for address,c in pairs(intcomponent.list) do
             end,
         }
     end
+    if c.type == "redstone" then
+        c.methods = {
+            getInput = function(self, side)
+              return 0
+            end,
+
+            getOutput = function(self, side)
+              return 0
+            end,
+
+            setOutput = function(self, side, value)
+            end,
+        }
+    end
 
     c.methods.address = address
 end

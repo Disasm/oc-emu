@@ -34,6 +34,7 @@ component_register("screen", {})
 component_register("computer", {})
 component_register("gpu", int_gpu)
 component_register("transposer", {})
+component_register("redstone", {})
 local scancodes = loadfile("scancode.lua")()
 
 local addr = {}
