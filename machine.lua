@@ -1282,6 +1282,7 @@ libcomponent = {
 sandbox.component = libcomponent
 
 local libcomputer = {
+  isEmulator = true,
   isRobot = computer.isRobot,
   address = computer.address,
   tmpAddress = computer.tmpAddress,
